@@ -1,0 +1,13 @@
+.github
+.idea
+.vscode
+*.iml
+*.log
+*.tmp
+node_modules
+dist
+coverage
+.env
+.DS_Store
+*.bak
+*.swp

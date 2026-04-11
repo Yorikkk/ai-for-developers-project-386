@@ -1,0 +1,370 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Booking API",
+    "version": "0.0.0"
+  },
+  "tags": [],
+  "paths": {
+    "/bookings": {
+      "post": {
+        "operationId": "Bookings_createBooking",
+        "description": "Create a new booking",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/Booking"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBookingRequest"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "Bookings_listBookings",
+        "description": "Get list of bookings",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Booking"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/event-types": {
+      "post": {
+        "operationId": "EventTypes_createEventType",
+        "description": "Create a new event type",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/EventType"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEventTypeRequest"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "EventTypes_listEventTypes",
+        "description": "Get list of event types",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/EventType"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/slots": {
+      "get": {
+        "operationId": "Slots_listSlots",
+        "description": "Get list of slots",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Slot"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Booking": {
+        "type": "object",
+        "required": [
+          "id",
+          "dateTime",
+          "eventTypeId",
+          "ownerId",
+          "guestScenarioId"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "dateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "eventTypeId": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string"
+          },
+          "guestScenarioId": {
+            "type": "string"
+          }
+        },
+        "description": "Booking entity"
+      },
+      "CreateBookingRequest": {
+        "type": "object",
+        "required": [
+          "dateTime",
+          "eventTypeId",
+          "ownerId",
+          "guestScenarioId"
+        ],
+        "properties": {
+          "dateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "eventTypeId": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string"
+          },
+          "guestScenarioId": {
+            "type": "string"
+          }
+        },
+        "description": "Request for creating a booking"
+      },
+      "CreateEventTypeRequest": {
+        "type": "object",
+        "required": [
+          "title",
+          "durationMinutes"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "durationMinutes": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "Request for creating an event type"
+      },
+      "CreateSlotRequest": {
+        "type": "object",
+        "required": [
+          "eventTypeId",
+          "ownerId",
+          "guestScenarioId",
+          "dateTime"
+        ],
+        "properties": {
+          "eventTypeId": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string"
+          },
+          "guestScenarioId": {
+            "type": "string"
+          },
+          "dateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Request for creating a slot"
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "description": "Error response model"
+      },
+      "EventType": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "durationMinutes"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "durationMinutes": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "Event type entity"
+      },
+      "GuestScenario": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "description": "Guest scenario entity"
+      },
+      "Owner": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "description": "Owner entity"
+      },
+      "Slot": {
+        "type": "object",
+        "required": [
+          "id",
+          "eventTypeId",
+          "ownerId",
+          "guestScenarioId",
+          "dateTime"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "eventTypeId": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "string"
+          },
+          "guestScenarioId": {
+            "type": "string"
+          },
+          "dateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "Slot entity"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.example.com",
+      "description": "Production server",
+      "variables": {}
+    }
+  ]
+}
