@@ -12,12 +12,15 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@mantine/core": "^9.0.1",
+    "@mantine/dates": "^9.0.2",
     "@mantine/form": "^9.0.1",
     "@mantine/hooks": "^9.0.1",
+    "@tabler/icons-react": "^3.41.1",
     "@types/prismjs": "^1.26.6",
     "prismjs": "^1.30.0",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.14.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
