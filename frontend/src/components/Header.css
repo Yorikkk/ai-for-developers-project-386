@@ -1,0 +1,52 @@
+.header {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 16px;
+}
+
+/* Group с justify="space-between" align="center" */
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Group с gap="xs" (логотип) */
+.header-logo-group {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem; /* xs = 10px */
+}
+
+/* Group с gap="lg" (навигация) */
+.header-nav-group {
+  display: flex;
+  gap: 1.25rem; /* lg = 20px */
+}
+
+/* IconCalendar: size={28}, color="#f97316", stroke={2} */
+.header-icon {
+  width: 28px;
+  height: 28px;
+  color: #f97316;
+  stroke-width: 2;
+}
+
+/* Text: size="xl", fw={600}, c="dark" */
+.header-title {
+  font-size: 1.25rem; /* xl размер */
+  font-weight: 600;
+  color: #25262b; /* dark цвет в Mantine */
+}
+
+/* Anchor: underline="never", c="#6b7280", fw={500} */
+.nav-link {
+  font-size: 16px;
+  text-decoration: none;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  text-decoration: none;
+}

@@ -1,6 +1,7 @@
-import { Button, Title, Text, Stack, Group, Card, SimpleGrid } from '@mantine/core'
+import { Button, Title, Text, Stack, Box, List } from '@mantine/core'
 import { useNavigate } from 'react-router-dom'
-import { IconCalendar, IconClock, IconUsers } from '@tabler/icons-react'
+import { IconArrowRight } from '@tabler/icons-react'
+import './HomePage.css'
 
 export default function HomePage() {
   const navigate = useNavigate()
@@ -9,77 +10,69 @@ export default function HomePage() {
     navigate('/book')
   }
 
-  const features = [
-    {
-      icon: <IconCalendar size={32} />,
-      title: 'Быстрая запись',
-      description: 'Выберите удобное время и дату для встречи за несколько кликов'
-    },
-    {
-      icon: <IconClock size={32} />,
-      title: 'Гибкое расписание',
-      description: 'Доступны встречи на 15 или 30 минут в удобное для вас время'
-    },
-    {
-      icon: <IconUsers size={32} />,
-      title: 'Простое управление',
-      description: 'Отслеживайте свои бронирования и получайте напоминания'
-    }
-  ]
-
   return (
-    <Stack gap="xl">
-      {/* Hero Section */}
-      <Stack align="center" gap="md" py="xl">
-        <Title order={1} size="h1" ta="center">
-          Сервис бронирования встреч
-        </Title>
-        <Text size="xl" c="dimmed" ta="center" maw={600}>
-          Легко планируйте встречи с коллегами, клиентами и партнерами. 
-          Выбирайте удобное время и тип встречи — мы позаботимся об остальном.
-        </Text>
-        <Button 
-          size="lg" 
-          onClick={handleBookClick}
-          mt="md"
-        >
-          Записаться
-        </Button>
-      </Stack>
+    <Box className="home-container">
+      <Box className="home-grid">
+        {/* Левый блок */}
+        <Stack gap="lg">
+          {/* 1. Плашка с белым фоном */}
+          <Box className="home-badge">
+            Быстрая запись на звонок
+          </Box>
 
-      {/* Features Section */}
-      <Title order={2} ta="center">Почему выбирают нас</Title>
-      <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }} spacing="lg">
-        {features.map((feature, index) => (
-          <Card key={index} shadow="sm" padding="lg" radius="md" withBorder>
-            <Stack align="center" gap="md">
-              <div style={{ color: 'var(--mantine-color-blue-6)' }}>
-                {feature.icon}
-              </div>
-              <Title order={3} ta="center">{feature.title}</Title>
-              <Text ta="center" c="dimmed">{feature.description}</Text>
-            </Stack>
-          </Card>
-        ))}
-      </SimpleGrid>
+          {/* 2. Заголовок Calendar */}
+          <Title order={1} className="home-title">
+            Calendar
+          </Title>
 
-      {/* Call to Action */}
-      <Card shadow="md" padding="xl" radius="md" withBorder mt="xl">
-        <Stack align="center" gap="md">
-          <Title order={2} ta="center">Готовы начать?</Title>
-          <Text size="lg" ta="center" c="dimmed" maw={500}>
-            Забронируйте свою первую встречу прямо сейчас. Это займет всего пару минут.
+          {/* 3. Описание */}
+          <Text size="lg" className="home-description">
+            Забронируйте встречу за минуту: выберите тип события и удобное время
           </Text>
-          <Group justify="center" mt="md">
-            <Button size="lg" onClick={handleBookClick}>
-              Записаться на встречу
-            </Button>
-            <Button size="lg" variant="outline">
-              Узнать больше
-            </Button>
-          </Group>
+
+          {/* 4. Кнопка Записаться */}
+          <Button
+            size="lg"
+            onClick={handleBookClick}
+            rightSection={<IconArrowRight size={20} />}
+            className="home-button"
+          >
+            Записаться
+          </Button>
         </Stack>
-      </Card>
-    </Stack>
+
+        {/* Правый блок - Возможности */}
+        <Box className="home-features-box">
+          <Title order={2} className="home-features-title">
+            Возможности
+          </Title>
+
+          <List
+            spacing="md"
+            size="md"
+            style={{ color: '#374151' }}
+            styles={{
+              itemWrapper: {
+                alignItems: 'flex-start',
+              },
+              itemLabel: {
+                fontSize: '16px',
+                lineHeight: 1.6,
+              },
+            }}
+          >
+            <List.Item>
+              Выбор типа события и удобного времени для встречи
+            </List.Item>
+            <List.Item>
+              Быстрое бронирование с подтверждением и дополнительными заметками
+            </List.Item>
+            <List.Item>
+              Управление типами встреч и просмотр предстоящих записей в админке
+            </List.Item>
+          </List>
+        </Box>
+      </Box>
+    </Box>
   )
 }
