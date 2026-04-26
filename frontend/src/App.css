@@ -4,6 +4,12 @@
   text-align: center;
 }
 
+/* Светло-серый фон контентной области под хедером */
+.app-content {
+  background: #f0f2f5;
+  min-height: calc(100vh - 65px);
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;

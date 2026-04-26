@@ -10,13 +10,18 @@ function App() {
   return (
     <>
       <Header />
-      <Container size="lg" py="xl">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/book" element={<BookingCatalogPage />} />
-          <Route path="/book/:eventTypeId" element={<BookingEventTypePage />} />
-        </Routes>
-      </Container>
+      {/* Светло-серый фон под хедером — общий фон для всех страниц */}
+      <div className="app-content">
+        <Container size="lg" py="xl">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            {/* /book — выбор типа события */}
+            <Route path="/book" element={<BookingEventTypePage />} />
+            {/* /book/:eventTypeId — каталог слотов для выбранного типа */}
+            <Route path="/book/:eventTypeId" element={<BookingCatalogPage />} />
+          </Routes>
+        </Container>
+      </div>
     </>
   )
 }

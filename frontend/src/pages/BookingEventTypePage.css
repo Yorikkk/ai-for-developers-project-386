@@ -1,0 +1,138 @@
+/* ===================================================
+   BookingEventTypePage — страница выбора типа события
+   =================================================== */
+
+.event-type-page {
+  min-height: calc(100vh - 120px);
+  padding: 0;
+  text-align: left;
+}
+
+/* ─── Hero Section ─── */
+.event-type-hero {
+  margin-bottom: 36px;
+}
+
+.event-type-hero-title {
+  font-size: 40px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.2;
+  margin: 0 0 10px;
+}
+
+.event-type-hero-subtitle {
+  font-size: 16px;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+/* ─── Cards Grid (max 2 в ряд) ─── */
+.event-type-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .event-type-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Event Type Card ─── */
+.event-type-card {
+  position: relative;
+  cursor: pointer;
+  background: #ffffff !important;
+  border-color: #e5e7eb !important;
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+  min-height: 160px;
+}
+
+.event-type-card:hover {
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.10);
+  transform: translateY(-3px);
+  border-color: #d1d5db !important;
+}
+
+/* ─── Duration Badge (top-right) ─── */
+.event-type-duration-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #FF8C42 !important;
+  color: #ffffff !important;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.02em;
+  /* Override Mantine badge styles */
+  --badge-color: #FF8C42;
+}
+
+/* ─── Card Title ─── */
+.event-type-card-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  /* Leave room for the badge */
+  padding-right: 72px;
+  line-height: 1.3;
+}
+
+/* ─── Card Subtitle (title from API) ─── */
+.event-type-card-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+/* ─── Footer row: duration + arrow ─── */
+.event-type-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+}
+
+.event-type-duration-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.event-type-clock-icon {
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.event-type-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: #6b7280;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.event-type-card:hover .event-type-arrow {
+  background: #FF8C42;
+  color: #ffffff;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 640px) {
+  .event-type-hero-title {
+    font-size: 28px;
+  }
+
+  .event-type-hero-subtitle {
+    font-size: 14px;
+  }
+}
