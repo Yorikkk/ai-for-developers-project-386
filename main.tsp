@@ -108,6 +108,6 @@ namespace BookingApi {
     /** Get list of bookings */
     @get
     @route("/bookings")
-    listBookings(): Booking[] | ErrorResponse;
+    listBookings(@query date?: plainDate): Booking[] | ErrorResponse;
   }
 }
