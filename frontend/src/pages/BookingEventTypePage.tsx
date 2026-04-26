@@ -16,7 +16,6 @@ import {
   SimpleGrid
 } from '@mantine/core'
 import { IconAlertCircle } from '@tabler/icons-react'
-import Header from '../components/Header'
 import './BookingEventTypePage.css'
 
 const API_BASE = 'http://localhost:4010'
@@ -186,31 +185,25 @@ export default function BookingEventTypePage() {
 
   if (loading) {
     return (
-      <>
-        <Header />
-        <Container size="xl" mt="xl">
-          <Stack align="center" justify="center" style={{ minHeight: '400px' }}>
-            <Loader size="lg" />
-            <Text>Загрузка...</Text>
-          </Stack>
-        </Container>
-      </>
+      <Container size="xl" mt="xl">
+        <Stack align="center" justify="center" style={{ minHeight: '400px' }}>
+          <Loader size="lg" />
+          <Text>Загрузка...</Text>
+        </Stack>
+      </Container>
     )
   }
 
   if (error || !eventType) {
     return (
-      <>
-        <Header />
-        <Container size="xl" mt="xl">
-          <Alert icon={<IconAlertCircle size={16} />} title="Ошибка" color="red">
-            {error || 'Тип события не найден'}
-          </Alert>
-          <Button mt="md" onClick={() => navigate('/book')}>
-            Вернуться к каталогу
-          </Button>
-        </Container>
-      </>
+      <Container size="xl" mt="xl">
+        <Alert icon={<IconAlertCircle size={16} />} title="Ошибка" color="red">
+          {error || 'Тип события не найден'}
+        </Alert>
+        <Button mt="md" onClick={() => navigate('/book')}>
+          Вернуться к каталогу
+        </Button>
+      </Container>
     )
   }
 
@@ -220,173 +213,170 @@ export default function BookingEventTypePage() {
   const monthName = currentMonth.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' })
 
   return (
-    <>
-      <Header />
-      <Container size="xl" mt="xl" className="booking-event-type-page">
-        <Stack gap="xl">
-          {/* Заголовок страницы */}
-          <Title order={1} className="page-title">
-            Встреча {eventType.durationMinutes} минут
-          </Title>
+    <Container size="xl" mt="xl" className="booking-event-type-page">
+      <Stack gap="xl">
+        {/* Заголовок страницы */}
+        <Title order={1} className="page-title">
+          Встреча {eventType.durationMinutes} минут
+        </Title>
 
-          {/* Три блока */}
-          <Grid>
-            {/* Левый блок */}
-            <Grid.Col span={{ base: 12, md: 4 }}>
-              <Card shadow="sm" padding="lg" radius="md" withBorder className="left-card">
-                <Stack gap="md">
-                  {/* Информация о хосте */}
-                  <Group gap="sm">
-                    <div className="host-avatar">
-                      <Text size="lg" fw={600} c="white">T</Text>
-                    </div>
-                    <div>
-                      <Text fw={500}>Tota</Text>
-                      <Text size="sm" c="dimmed">Host</Text>
-                    </div>
-                  </Group>
+        {/* Три блока */}
+        <Grid>
+          {/* Левый блок */}
+          <Grid.Col span={{ base: 12, md: 4 }}>
+            <Card shadow="sm" padding="lg" radius="md" withBorder className="left-card">
+              <Stack gap="md">
+                {/* Информация о хосте */}
+                <Group gap="sm">
+                  <div className="host-avatar">
+                    <Text size="lg" fw={600} c="white">T</Text>
+                  </div>
+                  <div>
+                    <Text fw={500}>Tota</Text>
+                    <Text size="sm" c="dimmed">Host</Text>
+                  </div>
+                </Group>
 
-                  {/* Заголовок и бейдж */}
-                  <Group justify="space-between" align="flex-start">
-                    <Title order={3} style={{ flex: 1 }}>
-                      Встреча {eventType.durationMinutes} минут
-                    </Title>
-                    <Badge size="lg" color="blue">
-                      {eventType.durationMinutes} мин
-                    </Badge>
-                  </Group>
+                {/* Заголовок и бейдж */}
+                <Group justify="space-between" align="flex-start">
+                  <Title order={3} style={{ flex: 1 }}>
+                    Встреча {eventType.durationMinutes} минут
+                  </Title>
+                  <Badge size="lg" color="blue">
+                    {eventType.durationMinutes} мин
+                  </Badge>
+                </Group>
 
-                  {/* Описание */}
-                  <Text size="sm" c="dimmed">
-                    {eventType.text || eventType.title || 'Короткий тип события для быстрого слота.'}
+                {/* Описание */}
+                <Text size="sm" c="dimmed">
+                  {eventType.text || eventType.title || 'Короткий тип события для быстрого слота.'}
+                </Text>
+
+                {/* Выбранная дата */}
+                <Box className="selected-date-box">
+                  <Text size="sm" c="dimmed" mb={4}>
+                    Выбранная дата
                   </Text>
+                  <Text fw={500}>
+                    {formatDate(selectedDate)}
+                  </Text>
+                </Box>
 
-                  {/* Выбранная дата */}
-                  <Box className="selected-date-box">
-                    <Text size="sm" c="dimmed" mb={4}>
-                      Выбранная дата
-                    </Text>
-                    <Text fw={500}>
-                      {formatDate(selectedDate)}
-                    </Text>
-                  </Box>
+                {/* Выбранное время */}
+                <Box className="selected-time-box">
+                  <Text size="sm" c="dimmed" mb={4}>
+                    Выбранное время
+                  </Text>
+                  <Text fw={500}>Время не выбрано</Text>
+                </Box>
+              </Stack>
+            </Card>
+          </Grid.Col>
 
-                  {/* Выбранное время */}
-                  <Box className="selected-time-box">
-                    <Text size="sm" c="dimmed" mb={4}>
-                      Выбранное время
-                    </Text>
-                    <Text fw={500}>Время не выбрано</Text>
-                  </Box>
-                </Stack>
-              </Card>
-            </Grid.Col>
+          {/* Центральный блок - Календарь */}
+          <Grid.Col span={{ base: 12, md: 4 }}>
+            <Card shadow="sm" padding="lg" radius="md" withBorder className="calendar-card">
+              <Stack gap="md">
+                <Title order={4}>Календарь</Title>
+                
+                {/* Заголовок календаря с навигацией */}
+                <Group justify="space-between">
+                  <Button variant="subtle" size="sm" onClick={handlePrevMonth}>←</Button>
+                  <Text fw={500}>{monthName}</Text>
+                  <Button variant="subtle" size="sm" onClick={handleNextMonth}>→</Button>
+                </Group>
 
-            {/* Центральный блок - Календарь */}
-            <Grid.Col span={{ base: 12, md: 4 }}>
-              <Card shadow="sm" padding="lg" radius="md" withBorder className="calendar-card">
-                <Stack gap="md">
-                  <Title order={4}>Календарь</Title>
-                  
-                  {/* Заголовок календаря с навигацией */}
-                  <Group justify="space-between">
-                    <Button variant="subtle" size="sm" onClick={handlePrevMonth}>←</Button>
-                    <Text fw={500}>{monthName}</Text>
-                    <Button variant="subtle" size="sm" onClick={handleNextMonth}>→</Button>
-                  </Group>
+                {/* Дни недели */}
+                <SimpleGrid cols={7} spacing="xs">
+                  {weekDays.map(day => (
+                    <Text key={day} size="xs" ta="center" c="dimmed">{day}</Text>
+                  ))}
+                </SimpleGrid>
 
-                  {/* Дни недели */}
-                  <SimpleGrid cols={7} spacing="xs">
-                    {weekDays.map(day => (
-                      <Text key={day} size="xs" ta="center" c="dimmed">{day}</Text>
-                    ))}
-                  </SimpleGrid>
+                {/* Дни месяца */}
+                <SimpleGrid cols={7} spacing="xs">
+                  {days.map((day, index) => (
+                    <Box
+                      key={index}
+                      className={`calendar-day ${
+                        day && 
+                        selectedDate.getDate() === day && 
+                        selectedDate.getMonth() === currentMonth.getMonth() &&
+                        selectedDate.getFullYear() === currentMonth.getFullYear()
+                          ? 'calendar-day-selected' 
+                          : ''
+                      }`}
+                      onClick={() => day && handleDateClick(day)}
+                      style={{
+                        cursor: day ? 'pointer' : 'default',
+                        padding: '8px',
+                        textAlign: 'center',
+                        borderRadius: '4px'
+                      }}
+                    >
+                      {day && <Text size="sm">{day}</Text>}
+                    </Box>
+                  ))}
+                </SimpleGrid>
+              </Stack>
+            </Card>
+          </Grid.Col>
 
-                  {/* Дни месяца */}
-                  <SimpleGrid cols={7} spacing="xs">
-                    {days.map((day, index) => (
-                      <Box
-                        key={index}
-                        className={`calendar-day ${
-                          day && 
-                          selectedDate.getDate() === day && 
-                          selectedDate.getMonth() === currentMonth.getMonth() &&
-                          selectedDate.getFullYear() === currentMonth.getFullYear()
-                            ? 'calendar-day-selected' 
-                            : ''
-                        }`}
-                        onClick={() => day && handleDateClick(day)}
-                        style={{
-                          cursor: day ? 'pointer' : 'default',
-                          padding: '8px',
-                          textAlign: 'center',
-                          borderRadius: '4px'
-                        }}
-                      >
-                        {day && <Text size="sm">{day}</Text>}
-                      </Box>
-                    ))}
-                  </SimpleGrid>
-                </Stack>
-              </Card>
-            </Grid.Col>
+          {/* Правый блок - Статус слотов */}
+          <Grid.Col span={{ base: 12, md: 4 }}>
+            <Card shadow="sm" padding="lg" radius="md" withBorder className="slots-card">
+              <Stack gap="md">
+                <Title order={4}>Статус слотов</Title>
+                
+                {selectedDateSlots.length === 0 ? (
+                  <Text c="dimmed" size="sm">
+                    Нет доступных слотов на выбранную дату
+                  </Text>
+                ) : (
+                  <Stack gap="xs">
+                    {selectedDateSlots.map(slot => {
+                      const isBooked = isSlotBooked(slot)
+                      const startTime = formatTime(slot.dateTime)
+                      const endDate = new Date(new Date(slot.dateTime).getTime() + eventType.durationMinutes * 60000)
+                      const endTime = formatTime(endDate.toISOString())
 
-            {/* Правый блок - Статус слотов */}
-            <Grid.Col span={{ base: 12, md: 4 }}>
-              <Card shadow="sm" padding="lg" radius="md" withBorder className="slots-card">
-                <Stack gap="md">
-                  <Title order={4}>Статус слотов</Title>
-                  
-                  {selectedDateSlots.length === 0 ? (
-                    <Text c="dimmed" size="sm">
-                      Нет доступных слотов на выбранную дату
-                    </Text>
-                  ) : (
-                    <Stack gap="xs">
-                      {selectedDateSlots.map(slot => {
-                        const isBooked = isSlotBooked(slot)
-                        const startTime = formatTime(slot.dateTime)
-                        const endDate = new Date(new Date(slot.dateTime).getTime() + eventType.durationMinutes * 60000)
-                        const endTime = formatTime(endDate.toISOString())
+                      return (
+                        <Box
+                          key={slot.id}
+                          className={`slot-item ${isBooked ? 'slot-booked' : 'slot-free'}`}
+                        >
+                          <Text fw={500} className="slot-time">
+                            {startTime} - {endTime}
+                          </Text>
+                          <Text size="sm" className="slot-status">
+                            {isBooked ? 'Занято' : 'Свободно'}
+                          </Text>
+                        </Box>
+                      )
+                    })}
+                  </Stack>
+                )}
+              </Stack>
+            </Card>
+          </Grid.Col>
+        </Grid>
 
-                        return (
-                          <Box
-                            key={slot.id}
-                            className={`slot-item ${isBooked ? 'slot-booked' : 'slot-free'}`}
-                          >
-                            <Text fw={500} className="slot-time">
-                              {startTime} - {endTime}
-                            </Text>
-                            <Text size="sm" className="slot-status">
-                              {isBooked ? 'Занято' : 'Свободно'}
-                            </Text>
-                          </Box>
-                        )
-                      })}
-                    </Stack>
-                  )}
-                </Stack>
-              </Card>
-            </Grid.Col>
-          </Grid>
-
-          {/* Кнопки */}
-          <Group justify="space-between" mt="lg">
-            <Button 
-              variant="default" 
-              onClick={() => navigate('/book')}
-            >
-              Назад
-            </Button>
-            <Button 
-              color="orange"
-              size="md"
-            >
-              Продолжить
-            </Button>
-          </Group>
-        </Stack>
-      </Container>
-    </>
+        {/* Кнопки */}
+        <Group justify="space-between" mt="lg">
+          <Button 
+            variant="default" 
+            onClick={() => navigate('/book')}
+          >
+            Назад
+          </Button>
+          <Button 
+            color="orange"
+            size="md"
+          >
+            Продолжить
+          </Button>
+        </Group>
+      </Stack>
+    </Container>
   )
 }
