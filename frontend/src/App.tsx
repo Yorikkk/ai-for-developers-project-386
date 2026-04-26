@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import HomePage from './pages/HomePage'
-import BookingCatalogPage from './pages/BookingCatalogPage'
-import BookingEventTypePage from './pages/BookingEventTypePage'
+import BookingCatalogPage from './pages/BookingEventTypePage'
+import BookingEventTypePage from './pages/BookingCatalogPage'
 import Header from './components/Header'
 import { Container } from '@mantine/core'
 import './App.css'
@@ -16,9 +16,9 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             {/* /book — выбор типа события */}
-            <Route path="/book" element={<BookingEventTypePage />} />
+            <Route path="/book" element={<BookingCatalogPage />} />
             {/* /book/:eventTypeId — каталог слотов для выбранного типа */}
-            <Route path="/book/:eventTypeId" element={<BookingCatalogPage />} />
+            <Route path="/book/:eventTypeId" element={<BookingEventTypePage />} />
           </Routes>
         </Container>
       </div>
