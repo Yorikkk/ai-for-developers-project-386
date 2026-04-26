@@ -22,6 +22,7 @@ namespace BookingApi {
     id: string;
     title: string;
     durationMinutes: int32;
+    text?: string;
   }
 
   /** Guest scenario entity */

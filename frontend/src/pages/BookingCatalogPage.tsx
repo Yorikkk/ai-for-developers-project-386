@@ -30,7 +30,7 @@ export default function BookingEventTypePage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('http://localhost:4010/event-types')
+    fetch('http://localhost/event-types')
       .then((res) => {
         if (!res.ok) throw new Error('API error')
         return res.json()

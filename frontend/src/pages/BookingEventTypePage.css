@@ -1,0 +1,120 @@
+.booking-event-type-page {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+/* Левая карточка */
+.left-card {
+  height: 100%;
+  background-color: white;
+}
+
+.host-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.selected-date-box,
+.selected-time-box {
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.booked-event-box {
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+}
+
+/* Карточка календаря */
+.calendar-card {
+  height: 100%;
+  background-color: white;
+}
+
+.calendar-day {
+  transition: all 0.2s;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-day:hover {
+  background-color: #f1f3f5;
+}
+
+.calendar-day-selected {
+  background-color: #228be6 !important;
+  color: white;
+}
+
+.calendar-day-selected:hover {
+  background-color: #1c7ed6 !important;
+}
+
+.calendar-day-selected * {
+  color: white !important;
+}
+
+/* Карточка статуса слотов */
+.slots-card {
+  height: 100%;
+  background-color: white;
+}
+
+.slot-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  background-color: white;
+  transition: all 0.2s;
+}
+
+.slot-item:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.slot-free {
+  border-color: #51cf66;
+}
+
+.slot-free .slot-status {
+  color: #51cf66;
+  font-weight: 500;
+}
+
+.slot-booked {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+}
+
+.slot-booked .slot-time {
+  color: #868e96;
+}
+
+.slot-booked .slot-status {
+  color: #868e96;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .page-title {
+    font-size: 1.5rem;
+  }
+}

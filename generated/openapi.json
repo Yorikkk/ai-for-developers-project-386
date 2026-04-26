@@ -44,7 +44,18 @@
       "get": {
         "operationId": "Bookings_listBookings",
         "description": "Get list of bookings",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "explode": false
+          }
+        ],
         "responses": {
           "200": {
             "description": "The request has succeeded.",
@@ -132,11 +143,56 @@
         }
       }
     },
+    "/event-types/{eventTypeId}": {
+      "get": {
+        "operationId": "EventTypes_getEventType",
+        "description": "Get event type by ID",
+        "parameters": [
+          {
+            "name": "eventTypeId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/EventType"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/slots": {
       "get": {
         "operationId": "Slots_listSlots",
         "description": "Get list of slots",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "eventTypeId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          }
+        ],
         "responses": {
           "200": {
             "description": "The request has succeeded.",
@@ -293,6 +349,9 @@
           "durationMinutes": {
             "type": "integer",
             "format": "int32"
+          },
+          "text": {
+            "type": "string"
           }
         },
         "description": "Event type entity"
