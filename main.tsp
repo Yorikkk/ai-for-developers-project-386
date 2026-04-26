@@ -94,7 +94,7 @@ namespace BookingApi {
     /** Get list of slots */
     @get
     @route("/slots")
-    listSlots(): Slot[] | ErrorResponse;
+    listSlots(@query eventTypeId?: string): Slot[] | ErrorResponse;
   }
 
   interface Bookings {
