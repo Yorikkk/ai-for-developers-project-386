@@ -84,6 +84,13 @@ namespace BookingApi {
       @body request: CreateEventTypeRequest
     ): EventType | ErrorResponse;
 
+    /** Get event type by ID */
+    @get
+    @route("/event-types/{eventTypeId}")
+    getEventType(
+      @path eventTypeId: string
+    ): EventType | ErrorResponse;
+
     /** Get list of event types */
     @get
     @route("/event-types")
