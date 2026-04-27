@@ -18,6 +18,8 @@ interface EventType {
   durationMinutes: number
 }
 
+const API_BASE = 'http://localhost:3000'  
+
 const FALLBACK_EVENT_TYPES: EventType[] = [
   { id: '1', title: 'Быстрая встреча', durationMinutes: 15 },
   { id: '2', title: 'Стандартная встреча', durationMinutes: 30 },
@@ -30,7 +32,7 @@ export default function BookingEventTypePage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('http://localhost/event-types')
+    fetch(`${API_BASE}/event-types`)
       .then((res) => {
         if (!res.ok) throw new Error('API error')
         return res.json()

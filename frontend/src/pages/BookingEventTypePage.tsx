@@ -19,7 +19,7 @@ import { IconAlertCircle } from '@tabler/icons-react'
 import 'dayjs/locale/ru'
 import './BookingEventTypePage.css'
 
-const API_BASE = 'http://localhost:4010'
+const API_BASE = 'http://localhost:3000'
 
 interface EventType {
   id: string
