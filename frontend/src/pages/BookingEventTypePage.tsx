@@ -1,21 +1,22 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { 
-  Container, 
-  Title, 
-  Text, 
-  Stack, 
-  Card, 
-  Badge, 
+import {
+  Container,
+  Title,
+  Text,
+  Stack,
+  Card,
+  Badge,
   Group,
   Button,
   Box,
   Grid,
   Loader,
-  Alert,
-  SimpleGrid
+  Alert
 } from '@mantine/core'
+import { DatePicker, DatesProvider } from '@mantine/dates'
 import { IconAlertCircle } from '@tabler/icons-react'
+import 'dayjs/locale/ru'
 import './BookingEventTypePage.css'
 
 const API_BASE = 'http://localhost:4010'
@@ -50,8 +51,7 @@ export default function BookingEventTypePage() {
   const [eventType, setEventType] = useState<EventType | null>(null)
   const [slots, setSlots] = useState<Slot[]>([])
   const [bookings, setBookings] = useState<Booking[]>([])
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
-  const [currentMonth, setCurrentMonth] = useState<Date>(new Date())
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -93,6 +93,8 @@ export default function BookingEventTypePage() {
   // Загрузка бронирований при изменении даты
   useEffect(() => {
     const fetchBookings = async () => {
+      if (!selectedDate) return
+      
       try {
         const dateStr = selectedDate.toISOString().split('T')[0]
         const bookingsResponse = await fetch(`${API_BASE}/bookings?date=${dateStr}`)
@@ -139,48 +141,12 @@ export default function BookingEventTypePage() {
 
   // Получение слотов на выбранную дату
   const getSlotsForSelectedDate = (): Slot[] => {
+    if (!selectedDate) return []
     const selectedDateStr = selectedDate.toISOString().split('T')[0]
     return slots.filter(slot => {
       const slotDateStr = new Date(slot.dateTime).toISOString().split('T')[0]
       return slotDateStr === selectedDateStr
     })
-  }
-
-  // Функции для календаря
-  const getDaysInMonth = (date: Date) => {
-    const year = date.getFullYear()
-    const month = date.getMonth()
-    const firstDay = new Date(year, month, 1)
-    const lastDay = new Date(year, month + 1, 0)
-    const daysInMonth = lastDay.getDate()
-    const startDayOfWeek = firstDay.getDay() === 0 ? 7 : firstDay.getDay()
-    
-    const days: (number | null)[] = []
-    
-    // Добавляем пустые дни в начале
-    for (let i = 1; i < startDayOfWeek; i++) {
-      days.push(null)
-    }
-    
-    // Добавляем дни месяца
-    for (let i = 1; i <= daysInMonth; i++) {
-      days.push(i)
-    }
-    
-    return days
-  }
-
-  const handleDateClick = (day: number) => {
-    const newDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
-    setSelectedDate(newDate)
-  }
-
-  const handlePrevMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))
-  }
-
-  const handleNextMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))
   }
 
   if (loading) {
@@ -208,9 +174,6 @@ export default function BookingEventTypePage() {
   }
 
   const selectedDateSlots = getSlotsForSelectedDate()
-  const days = getDaysInMonth(currentMonth)
-  const weekDays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
-  const monthName = currentMonth.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' })
 
   return (
     <Container size="xl" mt="xl" className="booking-event-type-page">
@@ -258,7 +221,7 @@ export default function BookingEventTypePage() {
                     Выбранная дата
                   </Text>
                   <Text fw={500}>
-                    {formatDate(selectedDate)}
+                    {selectedDate ? formatDate(selectedDate) : 'Не выбрана'}
                   </Text>
                 </Box>
 
@@ -279,45 +242,18 @@ export default function BookingEventTypePage() {
               <Stack gap="md">
                 <Title order={4}>Календарь</Title>
                 
-                {/* Заголовок календаря с навигацией */}
-                <Group justify="space-between">
-                  <Button variant="subtle" size="sm" onClick={handlePrevMonth}>←</Button>
-                  <Text fw={500}>{monthName}</Text>
-                  <Button variant="subtle" size="sm" onClick={handleNextMonth}>→</Button>
-                </Group>
-
-                {/* Дни недели */}
-                <SimpleGrid cols={7} spacing="xs">
-                  {weekDays.map(day => (
-                    <Text key={day} size="xs" ta="center" c="dimmed">{day}</Text>
-                  ))}
-                </SimpleGrid>
-
-                {/* Дни месяца */}
-                <SimpleGrid cols={7} spacing="xs">
-                  {days.map((day, index) => (
-                    <Box
-                      key={index}
-                      className={`calendar-day ${
-                        day && 
-                        selectedDate.getDate() === day && 
-                        selectedDate.getMonth() === currentMonth.getMonth() &&
-                        selectedDate.getFullYear() === currentMonth.getFullYear()
-                          ? 'calendar-day-selected' 
-                          : ''
-                      }`}
-                      onClick={() => day && handleDateClick(day)}
-                      style={{
-                        cursor: day ? 'pointer' : 'default',
-                        padding: '8px',
-                        textAlign: 'center',
-                        borderRadius: '4px'
-                      }}
-                    >
-                      {day && <Text size="sm">{day}</Text>}
-                    </Box>
-                  ))}
-                </SimpleGrid>
+                <DatesProvider settings={{ locale: 'ru' }}>
+                  <DatePicker
+                    value={selectedDate ? selectedDate.toISOString().split('T')[0] : null}
+                    onChange={(value) => {
+                      if (value) {
+                        setSelectedDate(new Date(value))
+                      } else {
+                        setSelectedDate(null)
+                      }
+                    }}
+                  />
+                </DatesProvider>
               </Stack>
             </Card>
           </Grid.Col>
