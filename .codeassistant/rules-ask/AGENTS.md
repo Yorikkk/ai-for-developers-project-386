@@ -1,10 +1,8 @@
 # Project Documentation Rules (Non-Obvious Only)
 
-- Project description is in Russian in `README.md` but codebase uses English
-- Domain entities are defined in Russian in original `AGENTS.md` but TypeSpec uses English field names
-- `Process.md` documents the project creation workflow in Russian
-- API design follows Cal.com simplified booking system (no authentication, no external calendar integrations)
-- Frontend is demonstration-only - shows Mantine components and Prism.js but no real API integration yet
-- TypeSpec entities map to domain entities: Owner, EventType, Slot, Booking, GuestScenario
-- Generated OpenAPI at `generated/openapi.json` is the source of truth for API contract
-- Design mockups in `design/` directory show expected UI flow
+- Backend is FULLY implemented - don't assume it's missing (old docs were outdated)
+- Slots are generated dynamically, not fetched from storage (counterintuitive for REST API)
+- Storage uses in-memory arrays - NOT a database (all data resets on server restart)
+- Init data in `backend/src/storage/init-data.ts` uses hardcoded IDs like `owner-1`, `event-type-1`
+- Slot generation logic in `backend/src/utils/slot-generator.ts` has hardcoded working hours and timezone
+- Plans in `/plans` directory describe backend architecture - they're implementation docs, not designs

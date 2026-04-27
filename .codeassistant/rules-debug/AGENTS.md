@@ -1,10 +1,9 @@
 # Project Debug Rules (Non-Obvious Only)
 
-- Frontend dev server runs on Vite default port (5173) - check terminal output for exact URL
-- TypeSpec compilation errors appear in terminal when running `npx tsp compile .` from root
-- No backend server yet - API endpoints are defined but not implemented
-- Generated OpenAPI file at `generated/openapi.json` can be inspected for API contract
-- Browser dev tools show React components with Mantine styling via Emotion
-- Console logs from frontend appear in browser dev tools, not terminal
-- Hot reload works for frontend changes when dev server is running
-- If frontend fails to start, ensure you're in `frontend` directory before running `npm run dev`
+- Backend uses **in-memory storage** - all data is lost on server restart
+- Data reinitializes automatically on each server start (see `initializeData()` in app.ts)
+- Slots are generated dynamically, not stored - check `slot-generator.ts` for logic bugs
+- Nodemon watches ONLY `/backend/src` directory - changes outside won't trigger restart
+- Frontend and backend run on separate ports: Vite 5173 (frontend), Express 3000 (backend)
+- Error responses follow `ErrorResponse` model with `code` and `message` fields
+- No authentication - if endpoints return 401/403, the implementation is wrong

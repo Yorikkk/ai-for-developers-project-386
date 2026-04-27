@@ -1,12 +1,10 @@
 # Project Architecture Rules (Non-Obvious Only)
 
-- Two separate systems: TypeSpec API definition (root) and React frontend (`frontend/`)
-- No backend implementation yet - only API contract defined in TypeSpec
-- Frontend is standalone demo app showing UI components, not integrated with API
-- TypeSpec generates OpenAPI 3.0 specification automatically to `generated/openapi.json`
-- Entity relationships: Slot references EventType, Owner, and GuestScenario; Booking references same
-- Designed as simplified booking system (inspired by Cal.com) with 30-minute meeting slots
-- No user authentication system - all endpoints are public by design
-- Frontend uses Mantine component library with Emotion CSS-in-JS for styling
-- Prism.js integration is for code display only, not for syntax highlighting user input
-- Project follows Hexlet educational project structure with separate frontend directory
+- Three separate systems: TypeSpec spec (root), Express backend (`backend/`), React frontend (`frontend/`)
+- Backend uses in-memory storage pattern - NOT a database (data resets on restart)
+- Slots are computed resources, not stored entities - generated in `slot-generator.ts` based on working hours
+- Storage layer has dual creation pattern: `create()` for runtime, `createWithId()` for init data
+- Data initialization happens in `app.ts` on server start (not in storage constructors)
+- Slot generation tightly coupled to hardcoded constants (WORK_START_HOUR, WORK_END_HOUR, UTC+3)
+- No authentication by design - adding auth would require rethinking public endpoints
+- Error handling uses custom middleware pattern with `ErrorResponse` model
