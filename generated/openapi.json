@@ -181,14 +181,24 @@
     "/slots": {
       "get": {
         "operationId": "Slots_listSlots",
-        "description": "Get list of slots",
+        "description": "Get list of slots for a specific event type and date",
         "parameters": [
           {
             "name": "eventTypeId",
             "in": "query",
-            "required": false,
+            "required": true,
             "schema": {
               "type": "string"
+            },
+            "explode": false
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
             },
             "explode": false
           }
@@ -413,6 +423,9 @@
           "dateTime": {
             "type": "string",
             "format": "date-time"
+          },
+          "isBooked": {
+            "type": "boolean"
           }
         },
         "description": "Slot entity"

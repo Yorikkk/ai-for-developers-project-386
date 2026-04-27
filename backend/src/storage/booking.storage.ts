@@ -26,6 +26,16 @@ class BookingStorage {
   }
 
   /**
+   * Find bookings by date and event type ID
+   */
+  findByDateAndEventType(date: string, eventTypeId: string): Booking[] {
+    return this.bookings.filter(booking => {
+      const bookingDate = extractDate(booking.dateTime);
+      return bookingDate === date && booking.eventTypeId === eventTypeId;
+    });
+  }
+
+  /**
    * Find booking by ID
    */
   findById(id: string): Booking | undefined {

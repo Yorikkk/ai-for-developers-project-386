@@ -7,6 +7,7 @@ export interface Slot {
   ownerId: string;
   guestScenarioId: string;
   dateTime: string; // ISO 8601 date-time string
+  isBooked?: boolean;
 }
 
 /**

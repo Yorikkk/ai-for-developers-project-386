@@ -38,6 +38,7 @@ namespace BookingApi {
     ownerId: string;
     guestScenarioId: string;
     dateTime: utcDateTime;
+    isBooked?: boolean;
   }
 
   /** Booking entity */
@@ -99,10 +100,13 @@ namespace BookingApi {
   }
 
   interface Slots {
-    /** Get list of slots */
+    /** Get list of slots for a specific event type and date */
     @get
     @route("/slots")
-    listSlots(@query eventTypeId?: string): Slot[] | ErrorResponse;
+    listSlots(
+      @query eventTypeId: string,
+      @query date: plainDate
+    ): Slot[] | ErrorResponse;
   }
 
   interface Bookings {
