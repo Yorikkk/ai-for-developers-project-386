@@ -34,6 +34,7 @@ interface Slot {
   ownerId: string
   guestScenarioId: string
   dateTime: string
+  isBooked: boolean
 }
 
 interface Booking {
@@ -50,6 +51,7 @@ export default function BookingEventTypePage() {
   
   const [eventType, setEventType] = useState<EventType | null>(null)
   const [slots, setSlots] = useState<Slot[]>([])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [bookings, setBookings] = useState<Booking[]>([])
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [loading, setLoading] = useState(true)
@@ -70,13 +72,20 @@ export default function BookingEventTypePage() {
         const eventTypeData = await eventTypeResponse.json()
         setEventType(eventTypeData)
 
+        // Формируем дату для запроса
+        const dateStr = selectedDate ? selectedDate.toISOString().split('T')[0] : ''
         // Получаем слоты для этого типа события
-        const slotsResponse = await fetch(`${API_BASE}/slots?eventTypeId=${eventTypeId}`)
+        const slotsResponse = await fetch(`${API_BASE}/slots?eventTypeId=${eventTypeId}&date=${dateStr}`)
         if (!slotsResponse.ok) {
           throw new Error('Не удалось загрузить слоты')
         }
         const slotsData = await slotsResponse.json()
-        setSlots(slotsData)
+        // Гарантируем наличие поля isBooked
+        const slotsWithBooking: Slot[] = slotsData.map((slot: Omit<Slot, 'isBooked'> & { isBooked?: boolean }) => ({
+          ...slot,
+          isBooked: slot.isBooked ?? false
+        }))
+        setSlots(slotsWithBooking)
 
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Произошла ошибка')
@@ -85,10 +94,10 @@ export default function BookingEventTypePage() {
       }
     }
 
-    if (eventTypeId) {
+    if (eventTypeId && selectedDate) {
       fetchData()
     }
-  }, [eventTypeId])
+  }, [eventTypeId, selectedDate])
 
   // Загрузка бронирований при изменении даты
   useEffect(() => {
@@ -111,18 +120,6 @@ export default function BookingEventTypePage() {
     fetchBookings()
   }, [selectedDate])
 
-  // Функция для проверки, занят ли слот
-  const isSlotBooked = (slot: Slot): boolean => {
-    if (!eventType) return false
-
-    const slotStart = new Date(slot.dateTime)
-    const slotEnd = new Date(slotStart.getTime() + eventType.durationMinutes * 60000)
-
-    return bookings.some(booking => {
-      const bookingTime = new Date(booking.dateTime)
-      return bookingTime >= slotStart && bookingTime < slotEnd
-    })
-  }
 
   // Форматирование времени
   const formatTime = (dateTime: string): string => {
@@ -271,7 +268,7 @@ export default function BookingEventTypePage() {
                 ) : (
                   <Stack gap="xs">
                     {selectedDateSlots.map(slot => {
-                      const isBooked = isSlotBooked(slot)
+                      const isBooked = slot.isBooked
                       const startTime = formatTime(slot.dateTime)
                       const endDate = new Date(new Date(slot.dateTime).getTime() + eventType.durationMinutes * 60000)
                       const endTime = formatTime(endDate.toISOString())
