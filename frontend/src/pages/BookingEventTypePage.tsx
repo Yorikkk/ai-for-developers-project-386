@@ -55,38 +55,24 @@ export default function BookingEventTypePage() {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [loading, setLoading] = useState(true)
+  const [loadingSlots, setLoadingSlots] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Загрузка данных типа события и слотов
+  // Загрузка типа события (один раз при монтировании)
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchEventType = async () => {
+      if (!eventTypeId) return
+      
       try {
         setLoading(true)
         setError(null)
 
-        // Получаем тип события
         const eventTypeResponse = await fetch(`${API_BASE}/event-types/${eventTypeId}`)
         if (!eventTypeResponse.ok) {
           throw new Error('Не удалось загрузить тип события')
         }
         const eventTypeData = await eventTypeResponse.json()
         setEventType(eventTypeData)
-
-        // Формируем дату для запроса
-        const dateStr = selectedDate ? selectedDate.toISOString().split('T')[0] : ''
-        // Получаем слоты для этого типа события
-        const slotsResponse = await fetch(`${API_BASE}/slots?eventTypeId=${eventTypeId}&date=${dateStr}`)
-        if (!slotsResponse.ok) {
-          throw new Error('Не удалось загрузить слоты')
-        }
-        const slotsData = await slotsResponse.json()
-        // Гарантируем наличие поля isBooked
-        const slotsWithBooking: Slot[] = slotsData.map((slot: Omit<Slot, 'isBooked'> & { isBooked?: boolean }) => ({
-          ...slot,
-          isBooked: slot.isBooked ?? false
-        }))
-        setSlots(slotsWithBooking)
-
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Произошла ошибка')
       } finally {
@@ -94,9 +80,37 @@ export default function BookingEventTypePage() {
       }
     }
 
-    if (eventTypeId && selectedDate) {
-      fetchData()
+    fetchEventType()
+  }, [eventTypeId])
+
+  // Загрузка слотов (при изменении даты)
+  useEffect(() => {
+    const fetchSlots = async () => {
+      if (!eventTypeId || !selectedDate) return
+      
+      try {
+        setLoadingSlots(true)
+        const dateStr = selectedDate.toISOString().split('T')[0]
+        const slotsResponse = await fetch(`${API_BASE}/slots?eventTypeId=${eventTypeId}&date=${dateStr}`)
+        
+        if (!slotsResponse.ok) {
+          throw new Error('Не удалось загрузить слоты')
+        }
+        
+        const slotsData = await slotsResponse.json()
+        const slotsWithBooking: Slot[] = slotsData.map((slot: Omit<Slot, 'isBooked'> & { isBooked?: boolean }) => ({
+          ...slot,
+          isBooked: slot.isBooked ?? false
+        }))
+        setSlots(slotsWithBooking)
+      } catch (err) {
+        console.error('Ошибка загрузки слотов:', err)
+      } finally {
+        setLoadingSlots(false)
+      }
     }
+
+    fetchSlots()
   }, [eventTypeId, selectedDate])
 
   // Загрузка бронирований при изменении даты
@@ -261,7 +275,12 @@ export default function BookingEventTypePage() {
               <Stack gap="md">
                 <Title order={4}>Статус слотов</Title>
                 
-                {selectedDateSlots.length === 0 ? (
+                {loadingSlots ? (
+                  <Stack align="center" justify="center" style={{ minHeight: '200px' }}>
+                    <Loader size="sm" />
+                    <Text size="sm" c="dimmed">Загрузка слотов...</Text>
+                  </Stack>
+                ) : selectedDateSlots.length === 0 ? (
                   <Text c="dimmed" size="sm">
                     Нет доступных слотов на выбранную дату
                   </Text>
