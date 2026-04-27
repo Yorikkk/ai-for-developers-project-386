@@ -15,7 +15,7 @@ import {
   Alert
 } from '@mantine/core'
 import { DatePicker, DatesProvider } from '@mantine/dates'
-import { IconAlertCircle } from '@tabler/icons-react'
+import { IconAlertCircle, IconCheck } from '@tabler/icons-react'
 import 'dayjs/locale/ru'
 import './BookingEventTypePage.css'
 
@@ -51,12 +51,14 @@ export default function BookingEventTypePage() {
   
   const [eventType, setEventType] = useState<EventType | null>(null)
   const [slots, setSlots] = useState<Slot[]>([])
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [bookings, setBookings] = useState<Booking[]>([])
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [loading, setLoading] = useState(true)
   const [loadingSlots, setLoadingSlots] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [hoveredSlotId, setHoveredSlotId] = useState<string | null>(null)
+  const [bookingLoading, setBookingLoading] = useState<string | null>(null)
+  const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
 
   // Загрузка типа события (один раз при монтировании)
   useEffect(() => {
@@ -160,6 +162,82 @@ export default function BookingEventTypePage() {
     })
   }
 
+  // Получение бронирований на выбранную дату
+  const getBookingsForSelectedDate = (): Booking[] => {
+    if (!selectedDate) return []
+    const selectedDateStr = selectedDate.toISOString().split('T')[0]
+    return bookings.filter(booking => {
+      const bookingDateStr = new Date(booking.dateTime).toISOString().split('T')[0]
+      return bookingDateStr === selectedDateStr
+    })
+  }
+
+  // Обработка бронирования слота
+  const handleBookSlot = async (slot: Slot) => {
+    if (slot.isBooked) {
+      setNotification({ type: 'error', message: 'Этот слот уже занят' })
+      return
+    }
+
+    if (!eventTypeId || !eventType) {
+      setNotification({ type: 'error', message: 'Тип события не выбран' })
+      return
+    }
+
+    setBookingLoading(slot.id)
+    setNotification(null)
+
+    try {
+      const response = await fetch(`${API_BASE}/bookings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          dateTime: slot.dateTime,
+          eventTypeId: eventTypeId,
+          ownerId: 'owner-1',
+          guestScenarioId: 'guest-scenario-1',
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || 'Ошибка бронирования')
+      }
+
+      // Успешное бронирование
+      setNotification({ type: 'success', message: 'Слот успешно забронирован' })
+      
+      // Обновить данные слотов и бронирований
+      const dateStr = selectedDate?.toISOString().split('T')[0]
+      if (dateStr) {
+        // Перезагрузить слоты
+        const slotsResponse = await fetch(`${API_BASE}/slots?eventTypeId=${eventTypeId}&date=${dateStr}`)
+        if (slotsResponse.ok) {
+          const slotsData = await slotsResponse.json()
+          const slotsWithBooking: Slot[] = slotsData.map((slot: Omit<Slot, 'isBooked'> & { isBooked?: boolean }) => ({
+            ...slot,
+            isBooked: slot.isBooked ?? false
+          }))
+          setSlots(slotsWithBooking)
+        }
+        
+        // Перезагрузить бронирования
+        const bookingsResponse = await fetch(`${API_BASE}/bookings?date=${dateStr}`)
+        if (bookingsResponse.ok) {
+          const bookingsData = await bookingsResponse.json()
+          setBookings(bookingsData)
+        }
+      }
+    } catch (err) {
+      setNotification({
+        type: 'error',
+        message: err instanceof Error ? err.message : 'Произошла ошибка при бронировании'
+      })
+    } finally {
+      setBookingLoading(null)
+    }
+  }
+
   if (loading) {
     return (
       <Container size="xl" mt="xl">
@@ -185,6 +263,7 @@ export default function BookingEventTypePage() {
   }
 
   const selectedDateSlots = getSlotsForSelectedDate()
+  const selectedDateBookings = getBookingsForSelectedDate()
 
   return (
     <Container size="xl" mt="xl" className="booking-event-type-page">
@@ -194,23 +273,25 @@ export default function BookingEventTypePage() {
           Встреча {eventType.durationMinutes} минут
         </Title>
 
+        {/* Уведомления */}
+        {notification && (
+          <Alert
+            icon={notification.type === 'success' ? <IconCheck size={16} /> : <IconAlertCircle size={16} />}
+            title={notification.type === 'success' ? 'Успешно' : 'Ошибка'}
+            color={notification.type === 'success' ? 'green' : 'red'}
+            onClose={() => setNotification(null)}
+            withCloseButton
+          >
+            {notification.message}
+          </Alert>
+        )}
+
         {/* Три блока */}
         <Grid>
           {/* Левый блок */}
           <Grid.Col span={{ base: 12, md: 4 }}>
             <Card shadow="sm" padding="lg" radius="md" withBorder className="left-card">
               <Stack gap="md">
-                {/* Информация о хосте */}
-                <Group gap="sm">
-                  <div className="host-avatar">
-                    <Text size="lg" fw={600} c="white">T</Text>
-                  </div>
-                  <div>
-                    <Text fw={500}>Tota</Text>
-                    <Text size="sm" c="dimmed">Host</Text>
-                  </div>
-                </Group>
-
                 {/* Заголовок и бейдж */}
                 <Group justify="space-between" align="flex-start">
                   <Title order={3} style={{ flex: 1 }}>
@@ -236,12 +317,28 @@ export default function BookingEventTypePage() {
                   </Text>
                 </Box>
 
-                {/* Выбранное время */}
-                <Box className="selected-time-box">
+                {/* Список бронирований */}
+                <Box className="bookings-list-box">
                   <Text size="sm" c="dimmed" mb={4}>
-                    Выбранное время
+                    Бронирования на выбранную дату
                   </Text>
-                  <Text fw={500}>Время не выбрано</Text>
+                  {selectedDateBookings.length === 0 ? (
+                    <Text fw={500}>Время не выбрано</Text>
+                  ) : (
+                    <Stack gap="xs">
+                      {selectedDateBookings.map(booking => {
+                        const time = formatTime(booking.dateTime)
+                        return (
+                          <Box key={booking.id} className="booking-item">
+                            <Text fw={500}>{time}</Text>
+                            <Text size="sm" c="dimmed">
+                              Встреча {eventType.durationMinutes} минут
+                            </Text>
+                          </Box>
+                        )
+                      })}
+                    </Stack>
+                  )}
                 </Box>
               </Stack>
             </Card>
@@ -291,18 +388,27 @@ export default function BookingEventTypePage() {
                       const startTime = formatTime(slot.dateTime)
                       const endDate = new Date(new Date(slot.dateTime).getTime() + eventType.durationMinutes * 60000)
                       const endTime = formatTime(endDate.toISOString())
+                      const isHovered = hoveredSlotId === slot.id
+                      const isLoading = bookingLoading === slot.id
 
                       return (
                         <Box
                           key={slot.id}
-                          className={`slot-item ${isBooked ? 'slot-booked' : 'slot-free'}`}
+                          className={`slot-item ${isBooked ? 'slot-booked' : 'slot-free'} ${isHovered ? 'slot-hover' : ''}`}
+                          onMouseEnter={() => !isBooked && setHoveredSlotId(slot.id)}
+                          onMouseLeave={() => setHoveredSlotId(null)}
+                          onClick={() => !isBooked && !isLoading && handleBookSlot(slot)}
+                          style={{ cursor: isBooked ? 'default' : 'pointer' }}
                         >
                           <Text fw={500} className="slot-time">
                             {startTime} - {endTime}
                           </Text>
-                          <Text size="sm" className="slot-status">
-                            {isBooked ? 'Занято' : 'Свободно'}
-                          </Text>
+                          <Group gap="xs">
+                            <Text size="sm" className="slot-status">
+                              {isBooked ? 'Занято' : (isHovered ? 'Забронировать' : 'Свободно')}
+                            </Text>
+                            {isLoading && <Loader size="xs" />}
+                          </Group>
                         </Box>
                       )
                     })}

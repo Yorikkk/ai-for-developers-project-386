@@ -7,9 +7,9 @@ const app = createApp();
 app.listen(PORT, () => {
   console.log(`
 ╔══════════════════════════════════════════════╗
-║   Booking API Server is running!            ║
+║   Booking API Server is running!             ║
 ║   Port: ${PORT}                                 ║
-║   Environment: ${process.env.NODE_ENV || 'development'}                  ║
+║   Environment: ${process.env.NODE_ENV || 'development'}                   ║
 ║                                              ║
 ║   API Endpoints:                             ║
 ║   - GET    /event-types                      ║

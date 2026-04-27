@@ -26,7 +26,8 @@
 }
 
 .selected-date-box,
-.selected-time-box {
+.selected-time-box,
+.bookings-list-box {
   padding: 12px;
   background-color: #f8f9fa;
   border-radius: 8px;
@@ -36,6 +37,16 @@
   padding: 10px;
   background-color: #f8f9fa;
   border-radius: 6px;
+}
+
+.booking-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: white;
+  border-radius: 6px;
+  border: 1px solid #dee2e6;
 }
 
 /* Карточка календаря */
@@ -83,11 +94,12 @@
   border: 1px solid #dee2e6;
   border-radius: 8px;
   background-color: white;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
-.slot-item:hover {
+.slot-item:hover:not(.slot-booked) {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
 }
 
 .slot-free {
@@ -97,6 +109,17 @@
 .slot-free .slot-status {
   color: #51cf66;
   font-weight: 500;
+}
+
+/* Hover состояние для свободных слотов */
+.slot-hover {
+  border-color: #fd7e14 !important;
+  box-shadow: 0 2px 8px rgba(253, 126, 20, 0.2) !important;
+}
+
+.slot-hover .slot-status {
+  color: #fd7e14 !important;
+  font-weight: 600 !important;
 }
 
 .slot-booked {
