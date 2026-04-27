@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  booking-app:
+    build: .
+    container_name: booking-app
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+    environment:
+      - PORT=${PORT:-3000}
+      - NODE_ENV=${NODE_ENV:-production}
+    restart: unless-stopped
+    networks:
+      - booking-network
+
+networks:
+  booking-network:
+    driver: bridge

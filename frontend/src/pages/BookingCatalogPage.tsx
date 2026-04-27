@@ -18,7 +18,8 @@ interface EventType {
   durationMinutes: number
 }
 
-const API_BASE = 'http://localhost:3000'  
+// В development используем localhost:3000, в production - относительный путь (тот же домен)
+const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.DEV ? 'http://localhost:3000' : '')
 
 const FALLBACK_EVENT_TYPES: EventType[] = [
   { id: '1', title: 'Быстрая встреча', durationMinutes: 15 },

@@ -19,7 +19,8 @@ import { IconAlertCircle, IconCheck } from '@tabler/icons-react'
 import 'dayjs/locale/ru'
 import './BookingEventTypePage.css'
 
-const API_BASE = 'http://localhost:3000'
+// В development используем localhost:3000, в production - относительный путь (тот же домен)
+const API_BASE = import.meta.env.VITE_API_BASE || (import.meta.env.DEV ? 'http://localhost:3000' : '')
 
 interface EventType {
   id: string
