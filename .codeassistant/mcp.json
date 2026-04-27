@@ -1,10 +1,28 @@
 {
-	"mcpServers": {
-		"sourcecraft": {
-			"type": "streamable-http",
-			"url": "https://api.sourcecraft.tech/mcp",
-			"disabled": true,
-			"alwaysAllow": []
-		}
-	}
+  "mcpServers": {
+    "sourcecraft": {
+      "type": "streamable-http",
+      "url": "https://api.sourcecraft.tech/mcp",
+      "disabled": true,
+      "alwaysAllow": []
+    },
+	"playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ]
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest"
+      ],
+      "disabledTools": [],
+      "alwaysAllow": [
+        "performance_start_trace",
+        "list_pages"
+      ]
+    }
+  }
 }
