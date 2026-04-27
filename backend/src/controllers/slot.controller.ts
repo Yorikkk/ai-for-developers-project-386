@@ -52,11 +52,14 @@ export function listSlots(req: Request, res: Response): void {
       return;
     }
 
-    // Get bookings for this date and event type
-    const bookings = bookingStorage.findByDateAndEventType(date, eventTypeId);
+    // Get all bookings for this date (all event types)
+    const bookings = bookingStorage.findByDate(date);
+
+    // Get all event types to determine booking durations
+    const allEventTypes = eventTypeStorage.findAll();
 
     // Generate slots with availability information
-    const slots = generateSlotsWithAvailability(eventType, date, bookings);
+    const slots = generateSlotsWithAvailability(eventType, date, bookings, allEventTypes);
 
     res.status(200).json(slots);
   } catch (error) {

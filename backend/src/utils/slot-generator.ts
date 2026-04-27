@@ -72,20 +72,30 @@ export function generateSlotsForDate(eventType: EventType, date: string): Slot[]
  * Check if a slot overlaps with any booking
  * @param slot - The slot to check
  * @param bookings - List of existing bookings
- * @param eventTypeDuration - Duration of the event type in minutes
+ * @param slotDuration - Duration of the slot in minutes
+ * @param eventTypeDurationMap - Map of event type ID to duration in minutes
  * @returns true if the slot is booked (overlaps with a booking), false otherwise
  */
 export function checkSlotAvailability(
   slot: Slot,
   bookings: Booking[],
-  eventTypeDuration: number
+  slotDuration: number,
+  eventTypeDurationMap: Map<string, number>
 ): boolean {
   const slotStart = new Date(slot.dateTime);
-  const slotEnd = new Date(slotStart.getTime() + eventTypeDuration * 60 * 1000);
+  const slotEnd = new Date(slotStart.getTime() + slotDuration * 60 * 1000);
 
   for (const booking of bookings) {
+    // Get the duration for this booking's event type
+    const bookingDuration = eventTypeDurationMap.get(booking.eventTypeId);
+    
+    // Skip booking if event type not found (deleted event type)
+    if (bookingDuration === undefined) {
+      continue;
+    }
+
     const bookingStart = new Date(booking.dateTime);
-    const bookingEnd = new Date(bookingStart.getTime() + eventTypeDuration * 60 * 1000);
+    const bookingEnd = new Date(bookingStart.getTime() + bookingDuration * 60 * 1000);
 
     // Check for overlap
     // Slots overlap if: slotStart < bookingEnd AND slotEnd > bookingStart
@@ -101,18 +111,26 @@ export function checkSlotAvailability(
  * Generate slots with availability information
  * @param eventType - The event type configuration
  * @param date - Date in YYYY-MM-DD format
- * @param bookings - List of existing bookings for this date and event type
+ * @param bookings - List of all existing bookings for this date (all event types)
+ * @param allEventTypes - List of all event types to determine booking durations
  * @returns Array of slots with isBooked flag
  */
 export function generateSlotsWithAvailability(
   eventType: EventType,
   date: string,
-  bookings: Booking[]
+  bookings: Booking[],
+  allEventTypes: EventType[]
 ): Slot[] {
   const slots = generateSlotsForDate(eventType, date);
 
+  // Create a map of event type ID to duration
+  const eventTypeDurationMap = new Map<string, number>();
+  for (const et of allEventTypes) {
+    eventTypeDurationMap.set(et.id, et.durationMinutes);
+  }
+
   return slots.map(slot => ({
     ...slot,
-    isBooked: checkSlotAvailability(slot, bookings, eventType.durationMinutes),
+    isBooked: checkSlotAvailability(slot, bookings, eventType.durationMinutes, eventTypeDurationMap),
   }));
 }
